@@ -1,0 +1,6 @@
+{
+    "subscription.id": "garbo-2020200-azurenumbers-gofast",
+    "resource_group_name": "TestingResourceGroup",
+    "resource_group_location": "westus",
+    "yolo": true
+}
