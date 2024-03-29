@@ -1,6 +1,6 @@
 # Azure Resource Management Scripts
 
-I've taken some of the cool stuff I've built (or played with) for managing Microsoft Azure with Python, cleaned them up, and now I’m throwing them out into the wild for all of you.
+I've taken some of the cool stuff I've built (or played with) for managing Microsoft Azure with Python, cleaned them up, and now I’m throwing them out into the wild for all of you.🎉🎉🎉
 
 ## Features
 
@@ -28,10 +28,9 @@ pip install azure-identity azure-mgmt-resource rich
 ```
 
 ## Usage
-
-    Clone the repository or download the script to your local machine.
-    Ensure you have configured the config.json file as per your requirements.
-    Run the script using Python:
+Clone the repository or download the script to your local machine.
+Ensure you have configured the config.json file as per your requirements.
+Run the script using Python:
 ```bash
 python SetUpAndTakeDown.py
 ```
