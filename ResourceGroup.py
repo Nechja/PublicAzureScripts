@@ -1,6 +1,7 @@
 import json
 import time
 import argparse
+from config import ConfigManager as cm
 from azure.identity import AzureCliCredential
 from azure.mgmt.resource import SubscriptionClient, ResourceManagementClient
 from azure.core.exceptions import ResourceNotFoundError
@@ -196,6 +197,7 @@ class AzureManagerCLI:
 class Commands:
     def __init__(self):
         self.azure_manager = AzureManager()
+        self.config_manager = cm("resourceGroup.config.json")
         self.yolo = False
         self.useconfig = True
 
@@ -205,7 +207,7 @@ class Commands:
 
     def set_config(self):
         try:
-            config = ConfigManager.read_config()
+            config = self.config_manager.read_config()
         except Exception as e:
             config = None
         if config and self.useconfig:
@@ -287,20 +289,11 @@ class Commands:
 
     def write_config(self):
         config = self.azure_manager.to_dict()
-        ConfigManager.write_config(config)
+        settings.write_config(config)
 
 
 
 
-class ConfigManager:
-    @staticmethod
-    def read_config():
-        with open('resourceConfig.json') as json_file:
-            return json.load(json_file)
-    @staticmethod
-    def write_config(config):
-        with open('resourceConfig.json', 'w') as json_file:
-            json.dump(config, json_file, indent=4)
 
 if __name__ == "__main__":
 

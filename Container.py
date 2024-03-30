@@ -16,4 +16,41 @@ class AzureManager:
         self.console = Console()
         self.credential = AzureCliCredential()
         self.subscription_client = SubscriptionClient(self.credential)
-        
+
+class AzureContainerCLI:
+    def __init__(self):
+        self.azure_manager = AzureManager()
+        self.commands = ContainerCommands()
+        self.parser = argparse.ArgumentParser(description='Manage Azure resources.')
+        self.parser.add_argument('--setup', action='store_true', help='Set up resources.')
+
+    def run(self):
+        args = self.parser.parse_args()
+        if args.setup:
+            self.commands.setup()
+        else:
+            self.commands.setup()
+     
+class ContainerCommands:
+    def __init__(self):
+        self.azure_manager = AzureManager()
+        self.console = Console()
+
+    def setup(self):
+        self.console.print("Setting up resources...")
+
+class ConfigManager:
+    @staticmethod
+    def read_config():
+        with open('containterConfig.json') as json_file:
+            return json.load(json_file)
+    @staticmethod
+    def write_config(config):
+        with open('containerConfig.json', 'w') as json_file:
+            json.dump(config, json_file, indent=4)
+
+
+if __name__ == "__main__":
+
+    azure_container_cli = AzureContainerCLI()
+    azure_container_cli.run()

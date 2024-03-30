@@ -1,2 +1,2 @@
-config.json
-resourceConfig.json
+.venv
+config/resourceGroup.config.json
