@@ -2,7 +2,8 @@ import json
 
 class ConfigManager:
     def __init__(self, config_file):
-        self.config_file = config_file
+        self.config_directory = 'config/'
+        self.config_file = f"{self.config_directory}{config_file}"
 
 
     def read_config(self):
