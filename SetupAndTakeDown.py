@@ -75,12 +75,19 @@ class AzureManager:
 
     def get_subscription(self,subscription_id_input=None):
         if subscription_id_input is None:
+            
             subscription_id_input = int(input("Enter the subscription id: "))
-            self.subscription = self.subscriptions[subscription_id_input]
+
+            try:
+                self.subscription = self.subscriptions[subscription_id_input]
+            except Exception as e:
+                self.console.print("Invalid subscription ID", style="bold red")
+                return self.get_subscription()
         else:
             self.subscription = self.subscription_client.subscriptions.get(subscription_id_input)
             Console().print(f"Subscription with ID [bold green]{self.subscription.display_name}[/] selected")
         return self.subscription
+
     
     def print_subscription(self):
         self.console.print(f"Selected subscription: [bold magenta]{self.subscription.display_name}[/]", style="blue")
@@ -164,12 +171,15 @@ class AzureManagerCLI:
         self.parser.add_argument('--takedown', action='store_true', help='Take down resources.')
         self.parser.add_argument('--setup-takedown', action='store_true', help='Set up resource if its not up, take down resource group if it is.')
         self.parser.add_argument('--yolo', action='store_true', help='YOLO mode, skips user input and yeets your scripts into the void.')
+        self.parser.add_argument('--no-config', action='store_true', help='Do not use the config file.')
 
     def run(self):
         commands = Commands()
         args = self.parser.parse_args()
         if args.yolo:
             commands.yolo = True
+        if args.no_config:
+            commands.useconfig = False
 
 
             
@@ -187,6 +197,7 @@ class Commands:
     def __init__(self):
         self.azure_manager = AzureManager()
         self.yolo = False
+        self.useconfig = True
 
     def set_yolo(self, yolo):
         self.azure_manager.yolo = yolo
@@ -197,7 +208,7 @@ class Commands:
             config = ConfigManager.read_config()
         except Exception as e:
             config = None
-        if config:
+        if config and self.useconfig:
             self.azure_manager.setup_from_config(config, self.yolo)
         else:
             self.azure_manager.setup()
