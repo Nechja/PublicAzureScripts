@@ -1,6 +1,6 @@
 # Azure Resource Management Scripts
 
-I've taken some of the cool stuff I've built (or played with) for managing Microsoft Azure with Python, cleaned them up, and now I’m throwing them out into the wild for all of you.🎉🎉🎉
+This is a project I use to interact with Azure when doing tests. It has taken on a life of it's own as I'm having fun building it. It was some of the useful scripts I've built (or played with) for managing Microsoft Azure with Python, cleaned up, and now I'm trying to make them even more useful🎉🎉🎉
 
 ## Features
 
@@ -18,12 +18,12 @@ Before you begin, ensure you have met the following requirements:
 
 - Python 3.12
 - Azure CLI installed and configured with `az login`.
-- Installation of required Python libraries: `azure-identity`, `azure-mgmt-resource`, and `rich`.
+- Installation of required Python libraries in [requirements.txt](requirements.txt)
 
 You can install the necessary Python libraries using pip:
 
 ```bash
-pip install azure-identity azure-mgmt-resource rich
+pip install -r requirements.txt
 
 ```
 
