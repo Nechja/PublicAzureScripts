@@ -9,10 +9,19 @@ from rich.table import Table
 
 import time
 
+class ICredentialProvider:
+    def get_credential(self):
+        pass
+
+class AzureCliCredentialProvider(ICredentialProvider):
+    def get_credential(self):
+        return AzureCliCredential()
+
 
 class ResourceGroupManager:
-    def __init__(self):
-        self.console = Console()
+    def __init__(self, icreds: ICredentialProvider = AzureCliCredentialProvider(), console: Console = None):
+        self.console = console if console else Console()
+        self.credential_provider = icreds
         self.credential = None
         self.subscription_client = None
         self.subscriptions = None
@@ -65,7 +74,7 @@ class ResourceGroupManager:
 
     def authenticate(self):
         try:
-            self.credential = AzureCliCredential()
+            self.credential = self.credential_provider.get_credential()
             self.console.print("[green]Authenticated[/] using [cyan]Azure CLI[/] credentials")
         except Exception as e:
             self.console.print("Failed to authenticate using Azure CLI credentials", style="bold red")

@@ -6,6 +6,7 @@ from rich.console import Console
 from rich.text import Text
 from rich.panel import Panel
 from rich import print
+from config import ConfigManager as cm
 
 
 
@@ -141,6 +142,7 @@ class Commands:
 
 
 if __name__ == "__main__":
+    manager = ResourceGroupManager()
 
     cli = AzureManagerCLI()
     cli.run()
