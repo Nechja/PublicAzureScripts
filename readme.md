@@ -1,3 +1,4 @@
+![Build Status](https://github.com/nechja/PublicAzureScripts/actions/workflows/python-app.yml/badge.svg)
 # Azure Resource Management Scripts
 
 This is a project I use to interact with Azure when doing tests. It has taken on a life of it's own as I'm having fun building it. It was some of the useful scripts I've built (or played with) for managing Microsoft Azure with Python, cleaned up, and now I'm trying to make them even more useful🎉🎉🎉
