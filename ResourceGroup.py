@@ -289,7 +289,7 @@ class Commands:
 
     def write_config(self):
         config = self.azure_manager.to_dict()
-        settings.write_config(config)
+        self.config_manager.write_config(config)
 
 
 
