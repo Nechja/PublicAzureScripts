@@ -171,14 +171,16 @@ class AzureManagerCLI:
         if args.yolo:
             commands.yolo = True
 
-        if not any(vars(args).values()):
-            commands.set_up_and_take_down()
+
+            
 
         if args.setup:
             commands.setup()
         elif args.takedown:
             commands.takedown()
         elif args.setup_takedown:
+            commands.set_up_and_take_down()
+        else:
             commands.set_up_and_take_down()
 
 class Commands:
