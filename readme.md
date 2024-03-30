@@ -32,7 +32,23 @@ Clone the repository or download the script to your local machine.
 Ensure you have configured the config.json file as per your requirements.
 Run the script using Python:
 ```bash
-python SetUpAndTakeDown.py
+python ResourceGroup.py
 ```
+## ResourceGroup.py Command Line Arguments
+
+### --setup
+This command is used to set up resources. When this argument is passed, the script will initiate the process of setting up resources.
+
+### --takedown
+This command is used to take down resources. When this argument is passed, the script will initiate the process of taking down resources.
+
+### --setup-takedown
+This command is used to manage resources. When this argument is passed, the script will check the status of the resource. If the resource is not up, it will set it up. If the resource is up, it will take it down.
+
+### --yolo
+This command is used to run the script in YOLO mode. When this argument is passed, the script will skip user input and execute the scripts.
+
+### --no-config
+This command is used to run the script without using the config file. When this argument is passed, the script will not use the config file for its operations.
 
 Follow the on-screen prompts to authenticate, select subscriptions, and manage resource groups.
