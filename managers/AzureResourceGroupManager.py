@@ -1,3 +1,4 @@
+from config import ConfigManager as cm
 from azure.core.exceptions import ResourceNotFoundError
 from azure.identity import AzureCliCredential
 from azure.mgmt.resource import ResourceManagementClient, SubscriptionClient
@@ -16,10 +17,23 @@ class ResourceGroupManager:
         self.subscription_client = None
         self.subscriptions = None
         self.subscription = None
-        self.resource_group_name = "TestingResourceGroup"
-        self.resource_group_location = "westus"
+        self.resource_group_name = None
+        self.resource_group_location = None
         self.yolo = False
 
+
+    def __defaults(self):
+        try:
+            config = cm("defaults.config.json")
+        except Exception as e:
+            Console().print("Failed to read defaults.config.json", style="bold red")
+            Console().print(e, style="red")
+        try:
+            self.resource_group_name = config.read_config()["default_resource_group_name"]
+            self.resource_group_location = config.read_config()["default_location"]
+        except Exception as e:
+            Console().print("Failed to read defaults from defaults.config.json", style="bold red")
+            Console().print(e, style="red")
 
     def to_dict(self):
         return {
@@ -31,12 +45,14 @@ class ResourceGroupManager:
 
 
     def setup(self):
+        self.__defaults()
         self.authenticate()
         self.print_subscriptions()
         self.subscription = self.get_subscription()
         self.print_subscription()
 
     def setup_from_config(self, config, yolo=None):
+        self.__defaults()
         self.authenticate()
         self.subscription_client = SubscriptionClient(self.credential)
         self.subscriptions = list(self.subscription_client.subscriptions.list())
