@@ -1,5 +1,6 @@
 import json
 import time
+import argparse
 from azure.identity import AzureCliCredential
 from azure.mgmt.resource import SubscriptionClient, ResourceManagementClient
 from azure.core.exceptions import ResourceNotFoundError
@@ -152,6 +153,68 @@ class AzureManager:
             Console().print("Something failed while checking, the resource could be deleted but who knows?", style="bold red")
             Console().print(e, style="red")
 
+class AzureManagerCLI:
+    def __init__(self):
+        self.azure_manager = AzureManager()
+        self.parser = argparse.ArgumentParser(description='Manage Azure resources.')
+        self.parser.add_argument('--setup', action='store_true', help='Set up resources.')
+        self.parser.add_argument('--takedown', action='store_true', help='Take down resources.')
+
+    def run(self):
+        args = self.parser.parse_args()
+        if args.setup:
+            self.setup()
+
+    def setup(self):
+        Console().print("Omg the args worked wow this is awesome", style="bold green")
+
+    def takedown(self):
+        # The takedown logic goes here. You can use self.azure_manager as needed.
+        pass
+
+class Commands:
+    @staticmethod
+    def set_up_and_take_down():
+        try:
+            config = ConfigManager.read_config()
+        except Exception as e:
+            config = None
+        if config:
+            azure_manager.setup_from_config(config)
+        else:
+            azure_manager.setup()
+    
+        if azure_manager.check_resource_group_does_not_exist():
+            azure_manager.create_resource_group()
+        elif azure_manager.yolo:
+
+            text = Text("YOLO mode is enabled, skipping user input and deleting the existing resource group")
+
+            text.stylize("bright_red", 0, 4)  # YOLO
+            text.stylize("bright_green", 5, 9)  # mode
+            text.stylize("bright_blue", 10, 17)  # is enabled
+            text.stylize("bright_magenta", 18, 26)  # skipping
+            text.stylize("bright_cyan", 27, 37)  # user input
+            text.stylize("bright_yellow", 38, 42)  # and
+            text.stylize("bright_red", 43, 50)  # deleting
+            text.stylize("bright_green", 51, 54)  # the
+            text.stylize("bright_blue", 55, 63)  # existing
+            text.stylize("bright_magenta", 64, 69)  # resource
+            text.stylize("bright_cyan", 70, 75)  # group
+            panel = Panel(text, title="YOLO Mode", expand=False)
+            
+            print(panel)
+            azure_manager.remove_resource_group()
+        else:
+            responce = input("Do you want to delete the existing resource group? (y/n): ")
+            if responce.lower() == 'y':
+                Console().print("Deleting the existing resource group")
+                azure_manager.remove_resource_group()
+                
+                pass
+            else:
+                Console().print("Exiting the program")
+
 class ConfigManager:
     @staticmethod
     def read_config():
@@ -163,46 +226,12 @@ class ConfigManager:
             json.dump(config, json_file, indent=4)
 
 if __name__ == "__main__":
+    cli = AzureManagerCLI()
+    cli.run()
     azure_manager = AzureManager()
-    try:
-        config = ConfigManager.read_config()
-    except Exception as e:
-        config = None
-    if config:
-        azure_manager.setup_from_config(config)
-    else:
-        azure_manager.setup()
-   
-    if azure_manager.check_resource_group_does_not_exist():
-        azure_manager.create_resource_group()
-    elif azure_manager.yolo:
-        console = Console()
-        text = Text("YOLO mode is enabled, skipping user input and deleting the existing resource group")
 
-        text.stylize("bright_red", 0, 4)  # YOLO
-        text.stylize("bright_green", 5, 9)  # mode
-        text.stylize("bright_blue", 10, 17)  # is enabled
-        text.stylize("bright_magenta", 18, 26)  # skipping
-        text.stylize("bright_cyan", 27, 37)  # user input
-        text.stylize("bright_yellow", 38, 42)  # and
-        text.stylize("bright_red", 43, 50)  # deleting
-        text.stylize("bright_green", 51, 54)  # the
-        text.stylize("bright_blue", 55, 63)  # existing
-        text.stylize("bright_magenta", 64, 69)  # resource
-        text.stylize("bright_cyan", 70, 75)  # group
-        panel = Panel(text, title="YOLO Mode", expand=False)
+    Commands.set_up_and_take_down()
 
-        print(panel)
-        azure_manager.remove_resource_group()
-    else:
-        responce = input("Do you want to delete the existing resource group? (y/n): ")
-        if responce.lower() == 'y':
-            Console().print("Deleting the existing resource group")
-            azure_manager.remove_resource_group()
-            
-            pass
-        else:
-            Console().print("Exiting the program")
     
     azure_manager_as_dict = azure_manager.to_dict()
     ConfigManager.write_config(azure_manager_as_dict)
