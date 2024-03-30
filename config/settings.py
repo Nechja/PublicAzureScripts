@@ -5,7 +5,6 @@ class ConfigManager:
         self.config_directory = 'config/'
         self.config_file = f"{self.config_directory}{config_file}"
 
-
     def read_config(self):
         with open(self.config_file) as json_file:
             return json.load(json_file)
