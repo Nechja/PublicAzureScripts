@@ -295,11 +295,11 @@ class Commands:
 class ConfigManager:
     @staticmethod
     def read_config():
-        with open('config.json') as json_file:
+        with open('resourceConfig.json') as json_file:
             return json.load(json_file)
     @staticmethod
     def write_config(config):
-        with open('config.json', 'w') as json_file:
+        with open('resourceConfig.json', 'w') as json_file:
             json.dump(config, json_file, indent=4)
 
 if __name__ == "__main__":
