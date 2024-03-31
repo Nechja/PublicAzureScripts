@@ -1,3 +1,3 @@
 from .AzureResourceGroupManager import ResourceGroupManager
-from .AzureResourceGroupManager import AzureCliCredentialProvider
-from .AzureResourceGroupManager import ICredentialProvider
+from .AzureCredentialProvider import AzureCliCredentialProvider
+from .AzureCredentialProvider import ICredentialProvider

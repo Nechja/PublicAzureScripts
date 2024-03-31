@@ -5,17 +5,8 @@ from azure.mgmt.resource import ResourceManagementClient, SubscriptionClient
 from rich.console import Console
 from rich.progress import BarColumn, Progress, TextColumn
 from rich.table import Table
-
-
+from .AzureCredentialProvider import ICredentialProvider, AzureCliCredentialProvider
 import time
-
-class ICredentialProvider:
-    def get_credential(self):
-        pass
-
-class AzureCliCredentialProvider(ICredentialProvider):
-    def get_credential(self):
-        return AzureCliCredential()
 
 
 class ResourceGroupManager:
