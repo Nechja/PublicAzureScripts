@@ -1,6 +1,6 @@
 import json
 import argparse
-from managers import ResourceGroupManager
+from managers import AzureResourceManager
 from config import ConfigManager as cm
 from rich.console import Console
 from rich.text import Text
@@ -12,7 +12,7 @@ from config import ConfigManager as cm
 
 class AzureManagerCLI:
     def __init__(self):
-        self.azure_manager = ResourceGroupManager()
+        self.azure_manager = AzureResourceManager()
         self.parser = argparse.ArgumentParser(description='Manage Azure resources.')
         self.parser.add_argument('--setup', action='store_true', help='Set up resources.')
         self.parser.add_argument('--takedown', action='store_true', help='Take down resources.')
@@ -42,7 +42,7 @@ class AzureManagerCLI:
 
 class Commands:
     def __init__(self):
-        self.azure_manager = ResourceGroupManager()
+        self.azure_manager = AzureResourceManager()
         self.config_manager = cm("resourceGroup.config.json")
         self.yolo = False
         self.useconfig = True
@@ -142,7 +142,7 @@ class Commands:
 
 
 if __name__ == "__main__":
-    manager = ResourceGroupManager()
+    manager = AzureResourceManager()
 
     cli = AzureManagerCLI()
     cli.run()

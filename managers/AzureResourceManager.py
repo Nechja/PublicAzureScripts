@@ -1,15 +1,17 @@
 from config import ConfigManager as cm
 from azure.core.exceptions import ResourceNotFoundError
-from azure.identity import AzureCliCredential
 from azure.mgmt.resource import ResourceManagementClient, SubscriptionClient
 from rich.console import Console
 from rich.progress import BarColumn, Progress, TextColumn
 from rich.table import Table
 from .AzureCredentialProvider import ICredentialProvider, AzureCliCredentialProvider
+from azure.mgmt.containerinstance import ContainerInstanceManagementClient
+from azure.mgmt.containerinstance.models import (ContainerGroup, Container, ResourceRequirements, ResourceRequests, ContainerPort, IpAddress, Port, OperatingSystemTypes)
+
 import time
 
 
-class ResourceGroupManager:
+class AzureResourceManager:
     def __init__(self, icreds: ICredentialProvider = AzureCliCredentialProvider(), console: Console = None):
         self.console = console if console else Console()
         self.credential_provider = icreds
@@ -18,7 +20,8 @@ class ResourceGroupManager:
         self.subscriptions = None
         self.subscription = None
         self.resource_group_name = None
-        self.resource_group_location = None
+        self.location = None
+        self.container_group = None
         self.yolo = False
 
 
@@ -30,18 +33,22 @@ class ResourceGroupManager:
             Console().print(e, style="red")
         try:
             self.resource_group_name = config.read_config()["default_resource_group_name"]
-            self.resource_group_location = config.read_config()["default_location"]
+            self.location = config.read_config()["default_location"]
         except Exception as e:
             Console().print("Failed to read defaults from defaults.config.json", style="bold red")
             Console().print(e, style="red")
 
     def to_dict(self):
-        return {
-            "subscription.id": self.subscription.id,
-            "resource_group_name": self.resource_group_name,
-            "resource_group_location": self.resource_group_location,
-            "yolo": self.yolo
-        }
+        try:
+            return {
+                "subscription.id": self.subscription.id,
+                "resource_group_name": self.resource_group_name,
+                "resource_group_location": self.location,
+                "yolo": self.yolo
+            }
+        except Exception as e:
+            Console().print("Failed to create dictionary", style="bold red")
+            Console().print(e, style="red")
 
 
     def setup(self):
@@ -133,7 +140,6 @@ class ResourceGroupManager:
 
             return True
         except ResourceNotFoundError:
-            # The resource does not exist, return True
             return True
         except Exception as e:
             Console().print("Failed to check [cyan]Azure[/] resource", style="bold red")
@@ -141,7 +147,7 @@ class ResourceGroupManager:
 
     def create_resource_group(self):
         try:
-            resource_group_params = {'location': self.resource_group_location}
+            resource_group_params = {'location': self.location}
             resource_client = ResourceManagementClient(self.credential, subscription_id=self.subscription.id)
             resource_group = resource_client.resource_groups.create_or_update(
                 self.resource_group_name,
@@ -174,3 +180,39 @@ class ResourceGroupManager:
         except Exception as e:
             Console().print("Something failed while checking, the resource could be deleted but who knows?", style="bold red")
             Console().print(e, style="red")
+
+    def launch_container(self):
+        container_name = 'loafsprong'
+        image_name = 'bansidhe/loafsprong:latest'
+        dns_name_label = 'loafsprongcontainer'
+        container_client = ContainerInstanceManagementClient(self.credential, self.subscription.id)
+        container_resource_requests = ResourceRequests(memory_in_gb=1.5, cpu=1.0)
+        container_resource_requirements = ResourceRequirements(requests=container_resource_requests)
+        
+        container = Container(name=container_name, image=image_name, resources=container_resource_requirements, ports=[ContainerPort(port=80)])
+
+
+        container_port = ContainerPort(port=80)
+        container_ports = [container_port]
+        group_ip_address = IpAddress(type='Public', ports=[Port(protocol="TCP", port=80)], dns_name_label=dns_name_label)
+        try:
+            self.container_group = ContainerGroup(location=self.location, containers=[container], os_type=OperatingSystemTypes.LINUX, ip_address=group_ip_address)
+        except Exception as e:
+            Console().print("Failed to create Container Group", style="bold red")
+
+            Console().print(e, style="red")
+        try:
+            container_client.container_groups._create_or_update_initial(self.resource_group_name, "boxes", self.container_group)
+        except Exception as e:
+            Console().print("Failed to create Container Group", style="bold red")
+            Console().print(e, style="red")
+
+
+        Console().print(f"Container Group with name [bold]{self.container_group.name}[/] created", style="green")
+
+    def delete_container(self):
+        container_client = ContainerInstanceManagementClient(self.credential, self.subscription.id)
+        container_client.container_groups.delete(self.resource_group_name, "countaiers")
+        Console().print(f"Container Group with name [bold]{self.container_group.name}[/] deleted", style="green")
+
+

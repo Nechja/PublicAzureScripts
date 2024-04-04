@@ -1,4 +1,4 @@
 {
     "default_resource_group_name": "TestingResourceGroup",
-    "default_location": "uswest"
+    "default_location": "westus"
 }
