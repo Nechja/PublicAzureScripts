@@ -42,17 +42,7 @@ class ContainerCommands:
         if self.azure_manager.check_resource_group_does_not_exist():
             self.azure_manager.create_resource_group()
         self.azure_manager.launch_container()
-        #self.azure_manager.delete_container()
-
-class ConfigManager:
-    @staticmethod
-    def read_config():
-        with open('containterConfig.json') as json_file:
-            return json.load(json_file)
-    @staticmethod
-    def write_config(config):
-        with open('containerConfig.json', 'w') as json_file:
-            json.dump(config, json_file, indent=4)
+        self.azure_manager.stop_container()
 
 
 if __name__ == "__main__":

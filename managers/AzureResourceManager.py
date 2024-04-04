@@ -22,7 +22,10 @@ class AzureResourceManager:
         self.resource_group_name = None
         self.location = None
         self.container_group = None
+        self.container_client = None
+        self.container = None
         self.yolo = False
+
 
 
     def __defaults(self):
@@ -185,7 +188,7 @@ class AzureResourceManager:
         container_name = 'loafsprong'
         image_name = 'bansidhe/loafsprong:latest'
         dns_name_label = 'loafsprongcontainer'
-        container_client = ContainerInstanceManagementClient(self.credential, self.subscription.id)
+        self.container_client = ContainerInstanceManagementClient(self.credential, self.subscription.id)
         container_resource_requests = ResourceRequests(memory_in_gb=1.5, cpu=1.0)
         container_resource_requirements = ResourceRequirements(requests=container_resource_requests)
         
@@ -202,17 +205,26 @@ class AzureResourceManager:
 
             Console().print(e, style="red")
         try:
-            container_client.container_groups._create_or_update_initial(self.resource_group_name, "boxes", self.container_group)
+            self.container_client.container_groups._create_or_update_initial(self.resource_group_name, "boxes", self.container_group)
         except Exception as e:
             Console().print("Failed to create Container Group", style="bold red")
             Console().print(e, style="red")
 
 
-        Console().print(f"Container Group with name [bold]{self.container_group.name}[/] created", style="green")
+        Console().print(f"Container Group with name [bold]boxes[/] created", style="green")
 
-    def delete_container(self):
-        container_client = ContainerInstanceManagementClient(self.credential, self.subscription.id)
-        container_client.container_groups.delete(self.resource_group_name, "countaiers")
-        Console().print(f"Container Group with name [bold]{self.container_group.name}[/] deleted", style="green")
+    def stop_container(self):
+        if self.container_client is None:
+            try:
+                self.container_client = ContainerInstanceManagementClient(self.credential, self.subscription.id)
+            except Exception as e:
+                Console().print("Failed to create Container Client", style="bold red")
+                Console().print(e, style="red")
+        try:
+            self.container_client.container_groups.stop(self.resource_group_name, "boxes")
+            Console().print(f"Container Group with name [bold]boxes[/] stopped", style="blue")
+        except Exception as e:
+            Console().print("Failed to stop Container Group", style="bold red")
+            Console().print(e, style="red")
 
 
