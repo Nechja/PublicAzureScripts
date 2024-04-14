@@ -28,7 +28,7 @@ pip install -r requirements.txt
 
 ```
 
-## Usage
+## ResourceGroup Usage
 Clone the repository or download the script to your local machine.
 Ensure you have configured the config.json file as per your requirements.
 Run the script using Python:
@@ -53,3 +53,14 @@ This command is used to run the script in YOLO mode. When this argument is passe
 This command is used to run the script without using the config file. When this argument is passed, the script will not use the config file for its operations.
 
 Follow the on-screen prompts to authenticate, select subscriptions, and manage resource groups.
+
+## Usage Of Container.py
+This script provides functionalities for managing Azure container resources. It utilizes commands to set up or manage your container environments seamlessly.
+
+```bash
+python Container.py --setup
+```
+## Container.py Command Line Arguments
+
+### --setup
+This command is used to set up container resources. When this argument is passed, the script will initiate the process of setting up container resources based on the configurations provided.
